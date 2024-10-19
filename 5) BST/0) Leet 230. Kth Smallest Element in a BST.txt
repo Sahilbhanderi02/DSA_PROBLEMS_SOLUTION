@@ -1,0 +1,137 @@
+Given the root of a binary search tree, and an integer k, return the kth smallest value (1-indexed) of all the values of the nodes in the tree.
+
+ 
+
+Example 1:
+
+Input: root = [3,1,4,null,2], k = 1
+Output: 1
+
+
+Example 2:
+
+Input: root = [5,3,6,2,4,null,null,1], k = 3
+Output: 3
+ 
+
+Constraints:
+
+The number of nodes in the tree is n.
+1 <= k <= n <= 104
+0 <= Node.val <= 104
+
+
+Solution 1:
+
+
+ArrayList<Integer> arr =new ArrayList<>();
+    public void inorder ( TreeNode root)
+    {
+        if(root==null) return ;
+        inorder (root.left);
+        arr.add(root.val);
+        inorder (root.right);
+    }
+    public int kthSmallest(TreeNode root, int k) {
+        inorder(root);
+
+        // int ans=0;
+        // for(int i=0 ; i <= arr.size(); i ++)
+        // {
+        //     if(i==k-1)
+        //     {
+        //         ans= arr.get(i);
+        //         break;
+        //     }
+        // }
+        // return ans;
+
+        // What the hell are you thinking this is Fucking Arraylist means normal arrya only you can get a element at any index at order of 1 no need to traverse 
+        return arr.get(k-1);
+    }
+
+
+
+Solution 2:  Optimal time  But still recursion space 
+
+
+ int n=0;
+    int count=0;
+    int ans=0;
+
+    void traverse(TreeNode root)
+    {
+        if(root==null) return ;
+        traverse(root.left);
+        if(n==0)return ;
+        n--;
+        if(n==0) ans=root.val;
+        traverse(root.right);
+    }
+
+    public int kthSmallest(TreeNode root, int k) {
+
+        n=k;
+        traverse(root);
+        return ans;
+    }
+
+
+
+
+Solution 3 : OPTIMAL TIME AND SPACE O(1) Morris
+
+
+    int n=0;
+    int count=0;
+    int ans=0;
+
+
+    public int kthSmallest(TreeNode root, int k) {
+
+        TreeNode curr=root;
+        while(curr!=null)
+        {
+            if(curr.left!=null)
+            {
+                TreeNode ipre=curr.left;
+                while(ipre.right!=null && ipre.right!=curr)
+                {
+                    ipre=ipre.right;
+                }
+                if(ipre.right==null)  //link
+                {
+                    ipre.right=curr;
+                    curr=curr.left;
+                }
+                else   // delink
+                {
+
+                    if(n==0)return ans;
+                    n--;
+                    if(n==0) ans=curr.val;
+
+                    //upar thi kan pakadyo
+                    count++;
+                    // if(count==k) ans=root.val;   YAAAAAADDD RAKHVU HAMESHA CURRENT FARE CHE ROOT TO ENI JAGYA EJ CHE THEROFEE ANS MALE ATLE CURR.VAL
+                    if(count==k) ans=curr.val;
+                    ipre.right=null;
+                    curr=curr.right;
+                }
+            }
+            else 
+            {
+                if(n==0)return ans;
+                n--;
+                if(n==0) ans=curr.val;
+
+                // uoa thi kan pakadyo
+                    // count++;
+                    // if(count==k) ans=curr.val;
+                curr=curr.right;
+            }
+        }
+        return ans ;
+
+    }
+

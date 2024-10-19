@@ -1,0 +1,81 @@
+Given an integer array nums and an integer k, return the k most frequent elements. You may return the answer in any order.
+
+ 
+
+Example 1:
+
+Input: nums = [1,1,1,2,2,3], k = 2
+Output: [1,2]
+
+
+Example 2:
+
+Input: nums = [1], k = 1
+Output: [1]
+ 
+
+Constraints:
+
+1 <= nums.length <= 105
+-104 <= nums[i] <= 104
+k is in the range [1, the number of unique elements in the array].
+It is guaranteed that the answer is unique.
+ 
+
+Follow up: Your algorithm's time complexity must be better than O(n log n), where n is the array's size.
+
+
+Solution 1 :
+
+    class Pair implements Comparable<Pair>
+    {
+        int frequency;
+        int element;
+        Pair(int frequency,int element)
+        {
+            this.frequency=frequency;
+            this.element=element;
+        }
+        public int compareTo(Pair x)
+        {
+            return this.frequency-x.frequency;
+        }
+    }
+
+
+    public int[] topKFrequent(int[] nums, int k) {
+
+        HashMap<Integer,Integer> map=new HashMap<>();
+        PriorityQueue<Pair> pq=new PriorityQueue<>();  ///minheap
+
+        for(int ele : nums)
+        {
+            if(map.containsKey(ele))
+            {
+                int freq=map.get(ele);
+                map.put(ele,freq+1);
+            }
+            else map.put(ele,1);
+        }
+
+        for(int key : map.keySet())
+        {
+            int freq=map.get(key);
+
+            pq.add(new Pair(freq,key));
+            if(pq.size()>k ) pq.remove();
+        }
+        int[] ans=new int [k];
+        int idx=0;
+        while(pq.size()>0)
+        {
+            Pair p=pq.remove();
+            ans[idx]=p.element;
+            idx++;
+        }
+        return ans;
+    }
+
+
+TC : O(n+ klogk + k) = O(n)
+SC : O(n+k)= O(n)

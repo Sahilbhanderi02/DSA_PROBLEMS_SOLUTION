@@ -1,0 +1,267 @@
+Given an array of points where points[i] = [xi, yi] represents a point on the X-Y plane and an integer k, return the k closest points to the origin (0, 0).
+
+The distance between two points on the X-Y plane is the Euclidean distance (i.e., √(x1 - x2)2 + (y1 - y2)2).
+
+You may return the answer in any order. The answer is guaranteed to be unique (except for the order that it is in).
+
+ 
+
+Example 1:
+
+Input: points = [[1,3],[-2,2]], k = 1
+Output: [[-2,2]]
+Explanation:
+The distance between (1, 3) and the origin is sqrt(10).
+The distance between (-2, 2) and the origin is sqrt(8).
+Since sqrt(8) < sqrt(10), (-2, 2) is closer to the origin.
+We only want the closest k = 1 points from the origin, so the answer is just [[-2,2]].
+
+
+Example 2:
+
+Input: points = [[3,3],[5,-1],[-2,4]], k = 2
+Output: [[3,3],[-2,4]]
+Explanation: The answer [[-2,4],[3,3]] would also be accepted.
+ 
+
+Constraints:
+
+1 <= k <= points.length <= 104
+-104 <= xi, yi <= 104
+
+
+Solution 1 :  Using Maxheap
+
+
+    class Triplet implements Comparable<Triplet>{
+        int dist;
+        int x;
+        int y;
+        Triplet(int dist,int x, int y)
+        {
+            this.dist=dist;
+            this.x=x;
+            this.y=y;
+        }
+        public int compareTo(Triplet t)
+        {
+            return this.dist-t.dist;   //kona basis par compare karvi chavi to square na or distance na 
+        }
+    }
+
+    public int[][] kClosest(int[][] points, int k) {
+
+	// failed 
+        // int [][]ans=new int [k][2];
+
+        // PriorityQueue<Double> pq=new PriorityQueue<>(Collections.reverseOrder());
+        // HashMap<Double,Integer> map=new HashMap<>();  // <root, eno index>
+
+        // for(int i=0; i <points.length; i++)
+        // {
+        //     int andarAnswer=0;
+        //     for(int j=0;j<=1;j++)
+        //     {
+        //         int square=points[i][j]*points[i][j];
+        //         andarAnswer+=square;
+        //     }
+        //     double root=Math.sqrt(andarAnswer);
+
+        //     map.put(root,i);
+
+        //     pq.add(root);
+        //     if(pq.size()>k) pq.remove();
+        // }
+        // int idx=0;
+        // while(pq.size()>0)
+        // {
+        //     int required=map.get(pq.remove());
+        //     ans[idx]=points[required];
+        //     idx++;
+        // }
+        // return ans ;
+
+       
+
+        PriorityQueue<Triplet> pq=new PriorityQueue<>(Collections.reverseOrder());
+
+        for(int i=0; i <points.length;i++)
+        {
+            int x=points[i][0], y = points[i][1];
+            int square= x*x + y*y ;
+
+            // pq.add(square,x,y);  //no bro blunder
+            pq.add(new Triplet(square,x,y));
+            if(pq.size()>k) pq.remove();
+        }
+        int ans[][]=new int[k][2];
+        for(int i=0; i<k;i++)
+        {
+            Triplet t=pq.remove();
+            ans[i][0]=t.x;
+            ans[i][1]=t.y;
+        }
+        return ans;
+    }
+
+
+
+
+    // Method 1: Comparator
+    // public int[][] kClosest(int[][] points, int k) {
+    //     Arrays.sort(points, (a, b) -> squaredDistance(a) - squaredDistance(b));
+
+    //     return Arrays.copyOf(points, k);
+    // }
+
+    // private int squaredDistance(int[] point) {
+    //     return point[0] * point[0] + point[1] * point[1];
+    // }
+
+    // Time: O(nlogn + k)
+    // Space: O(logn) to O(n)
+
+    // Method 2: MaxHeap
+    // public int[][] kClosest(int[][] points, int k) {
+    //     PriorityQueue<int[]> maxHeap = new PriorityQueue<>((a, b) -> b[0] - a[0]);
+
+    //     for (int i = 0; i < points.length; i++) {
+    //         int[] entry = {squaredDistance(points[i]), i};
+    //         if (maxHeap.size() < k) {
+    //             maxHeap.offer(entry);
+    //         } else if (entry[0] < maxHeap.peek()[0]) {
+    //             maxHeap.poll();
+    //             maxHeap.offer(entry);
+    //         }
+    //     }
+
+    //     int[][] result = new int[k][2];
+    //     for (int i = 0; i < k; i++) {
+    //         result[i] = points[maxHeap.poll()[1]];
+    //     }
+    //     return result;
+    // }
+
+    // private int squaredDistance(int[] point) {
+    //     return point[0] * point[0] + point[1] * point[1];
+    // }
+
+    // Time: O(nlogk + klogk)
+    // Space: O(k)
+    // public int[][] kClosest(int[][] points, int k) {
+    //     int[] distances = new int[points.length];
+    //     double low = 0, high = 0;
+    //     // indices reference of point, remian, split, closer and further are all Integer of indexes
+    //     List<Integer> remain = new ArrayList<>();
+    //     int[][] result = new int[k][2];
+    //     for (int i = 0; i < points.length; i++) {
+    //         distances[i] = squaredDistance(points[i]);
+    //         high = Math.max(high, distances[i]);
+    //         remain.add(i);
+    //     }
+
+    //     // Use a list for adding element easily without dealing with index/size
+    //     List<Integer> closestK = new ArrayList<>();
+    //     while (k > 0) {
+    //         double mid = low + (high - low) / 2;
+    //         List<List<Integer>> split = splitByDis(remain, distances, mid);
+    //         List<Integer> closer = split.get(0);
+    //         if (closer.size() > k) {
+    //             remain = closer;
+    //             high = mid;
+    //         } else {     
+    //             k -= closer.size();
+    //             closestK.addAll(closer);
+    //             remain = split.get(1);
+    //             // mid is not included in farther list so we can add 1
+    //             low = mid + 1;
+    //         }
+    //     }
+
+    //     // cannot use k directly for i's maximum value since it became 0
+    //     for (int i = 0; i < closestK.size(); i++) {
+    //         int index = closestK.get(i);
+    //         result[i] = points[index];
+    //     }
+
+    //     return result;
+    // }
+
+    // private List<List<Integer>> splitByDis(List<Integer> remain, int[] distances, double target) {
+    //     List<List<Integer>> result = new ArrayList<>();
+    //     List<Integer> closer = new ArrayList<>();
+    //     List<Integer> farther = new ArrayList<>();
+    //     result.add(closer);
+    //     result.add(farther);
+    //     for (int point : remain) {
+    //         if (distances[point] > target) {
+    //             farther.add(point);
+    //         } else {
+    //             closer.add(point);
+    //         }
+    //     }
+    //     return result;
+    // }
+    // private int squaredDistance(int[] point) {
+    //     return point[0] * point[0] + point[1] * point[1];
+    // }
+
+    // Time: O(N)
+    // Space: O(N)
+
+    // Method 4: Quick Select 
+    public int[][] kClosest(int[][] points, int k) {
+        return quickSelect(points, k);
+    }
+
+    private int[][] quickSelect(int[][] points, int k) {
+        int left = 0;
+        int right = points.length - 1;
+        // !! if k is the length of points, return return the original list
+        // otherwise the solution will keep looping till time out exception
+        // because we always choose left as pivot if there are two element
+        // and left will = to pivotIndex which is also left
+        // since pivotIndex will be 0 because all elements are greater or equal to pivot
+        // int pivotIndex = -1;
+        int pivotIndex = points.length;
+        while (pivotIndex != k) {
+            int pivot = pickPivot(left, right);
+            pivotIndex = partition(points, left, right, pivot);
+            if (pivotIndex > k) {
+                right = pivotIndex - 1;
+            } else {
+                left = pivotIndex;
+            }
+        }
+        return Arrays.copyOf(points, k);
+    }
+
+    private int pickPivot(int left, int right) {
+        return left + (right - left) / 2;
+    }
+
+    private int partition(int[][] points, int left, int right, int pivot) {
+        int pivotDist = squaredDistance(points[pivot]);
+
+        while (left < right) {
+            if (squaredDistance(points[left]) >= pivotDist) {
+                int[] temp = points[left];
+                points[left] = points[right];
+                points[right] = temp;
+                right--;
+            } else {
+                left++;
+            }
+        }
+
+        // if left needs to move to the left most position of right side, which is greater or equal to pivotDist
+        // If left is less than pivotDist, then it need to increment by one step
+        if (squaredDistance(points[left]) < pivotDist) {
+            left++;
+        }
+        return left;
+    }
+
+    private int squaredDistance(int[] point) {
+        return point[0] * point[0] + point[1] * point[1];
+    }

@@ -1,0 +1,181 @@
+
+Given two strings s and t, return true if t is an 
+anagram
+ of s, and false otherwise.
+
+ 
+
+Example 1:
+
+Input: s = "anagram", t = "nagaram"
+
+Output: true
+
+
+Example 2:
+
+Input: s = "rat", t = "car"
+
+Output: false
+ 
+
+Constraints:
+
+1 <= s.length, t.length <= 5 * 104
+s and t consist of lowercase English letters.
+
+
+
+Solution 1: Brute 
+
+public boolean isAnagram(String s, String t) {
+
+        if(s.length()!=t.length()) return false;
+
+        char [] a=s.toCharArray();
+        char [] b=t.toCharArray();
+        Arrays.sort(a);
+        Arrays.sort(b);
+
+        for(int i=0; i<a.length;i++)   // aya length() nai chale error avshe because char array vhe ()aa khali string ne lagta mate ause thay
+        {
+            if(a[i]!=b[i])return false;
+        }
+        return true;
+    }
+
+
+
+Solution 2 :
+
+    public boolean isAnagram(String s, String t) {
+
+        // number of occurrences of alphabaets in  boht string should be same 
+
+        // // shuffleee, jumble game ekaru atle e eno anagram thay jay 
+
+        HashSet<Character> set=new HashSet<>();
+
+
+        //blunder wrong approach
+        // for(int i=0 ; i < s.length() ; i++)
+        // {
+        //     char ch=s.charAt(i);
+        //     set.add(ch);
+        // }
+        // int count1=set.size();
+
+        // for(int i=0 ; i < t.length(); i++)
+        // {
+        //     char ch=t.charAt(i);
+        //     // set.add(ch);
+
+        // }
+        // int count2=set.size();
+
+        // if((count1-count2)==0) return true;
+        // else return false;
+
+
+        if(s.length()!=t.length()) return false;
+
+        HashMap<Character, Integer> map1=new HashMap<>();
+        HashMap<Character, Integer> map2=new HashMap<>();
+
+        for(int i=0 ; i < s.length(); i++)
+        {
+            char ch =s.charAt(i);
+
+            if(map1.containsKey(ch))
+            {
+                int count=map1.get(ch);
+                map1.put(ch,count+1);
+            }
+            else 
+            {
+                map1.put(ch,1);
+            }
+        }
+        for(int i=0 ; i <t.length(); i++)
+        {
+            char ch=t.charAt(i);
+            if(map2.containsKey(ch))
+            {
+                int count=map2.get(ch);
+                map2.put(ch,count+1);
+            }
+            else 
+            {
+                map2.put(ch,1);
+            }
+        }
+
+        boolean flag=true;
+        // aya je confusuion hatu ke length alag to travel kem karu ek khatam thy jase to bhai lenght alaga hase to kyarai anagram hoy j no eke 
+        // for(int i =0 ; i < s.length() ; i++)
+        // {
+
+            // aa logivc aya kem wromg thayu kem ke bhai peli string no pelo character , biji string na character sathe same hoy e jaruri nathi !!!!!!
+            // tame alag charcater na count ne compare karo cho
+            // char c1=s.charAt(i);
+            // char c2=t.charAt(i);
+            //     int count1=map1.get(c1);
+            //     int count2=map2.get(c2);
+            //     if(count1!=count2) 
+            //     {
+            //         flag=false;
+            //         break;
+            //     }
+        //     char key= s.charAt(i);
+        //     if(map1.get(key)!=map2.get(key)) return false;
+
+        // }
+
+        for(char key : map1.keySet())
+        {
+            int val1=map1.get(key);
+            if(!map2.containsKey(key)) return false;
+            int val2=map2.get(key);
+
+            // if(map1.get(key)!=map2.get(key)) return false;
+            if(val1!=val2) return false;
+
+        }
+        return true;
+
+    }
+
+
+
+
+
+// aa khabar nia su che 
+    public boolean isAnagram(String s, String t) {
+
+        int n =s.length();
+        int m =t.length();
+
+        if(n!=m) return false;
+
+        StringBuilder sb1=new StringBuilder(s);
+        StringBuilder sb2=new StringBuilder(t);
+        
+        for(int i=0;i<sb1.length();i++)
+        {
+            char ch1=sb1.charAt(i);
+
+            for(int j=0 ; j<sb2.length();j++)   // aya j<m lakhso to out of bounds thay jase because m fixed size che ane ape dar akhte size ghtadta javi chavi
+            {
+                char ch2=sb2.charAt(j);
+                if(ch1==ch2)
+                {
+                    sb2.deleteCharAt(j);
+                }
+            }
+        }
+
+        if(sb2.length()==0)return true;
+        else return false;
+
+
+

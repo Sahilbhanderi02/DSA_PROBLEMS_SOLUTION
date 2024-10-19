@@ -1,0 +1,172 @@
+
+Given the root of a binary tree, determine if it is a valid binary search tree (BST).
+
+A valid BST is defined as follows:
+
+The left subtree of a node contains only nodes with keys less than the node's key.
+The right subtree of a node contains only nodes with keys greater than the node's key.
+Both the left and right subtrees must also be binary search trees.
+ 
+
+Example 1:
+
+Input: root = [2,1,3]
+Output: true
+
+
+Example 2:
+
+Input: root = [5,1,4,null,null,3,6]
+Output: false
+Explanation: The root node's value is 5 but its right child's value is 4.
+ 
+
+Constraints:
+
+The number of nodes in the tree is in the range [1, 104].
+-231 <= Node.val <= 231 - 1
+
+
+
+
+Solution 1 : 
+
+ArrayList<Integer> arr =new ArrayList<>();
+    public void inorder ( TreeNode root)
+    {
+        if(root==null) return ;
+        inorder (root.left);
+        arr.add(root.val);
+        inorder (root.right);
+    }
+
+    public boolean isValidBST(TreeNode root) {
+        inorder(root);
+
+        boolean flag=true;
+        for(int i=0 ; i< arr.size()-1 ; i++)
+        {
+            if( arr.get(i)>=arr.get(i+1) )  // aya >= avhse khali > karyu to wromg answer for 2,2,2 hoy to 
+            {
+                flag=false;
+                break;
+            }
+        }
+        return flag;
+    }
+
+
+
+Solution 2 :
+ 
+  private long max(TreeNode root)
+    {
+        if(root==null) return Long.MIN_VALUE;
+        long a=root.val;
+        long b=max(root.left);
+        long c=max(root.right);
+        return Math.max(a, Math.max(b,c));
+    }
+    private long min(TreeNode root)
+    {
+        if(root==null) return Long.MAX_VALUE;
+        long a=root.val;
+        long b=min(root.left);
+        long c=min(root.right);
+        return Math.min(a, Math.min(b,c));
+    }
+    public boolean isValidBST(TreeNode root) {
+        if (root==null) return true;
+        if(root.val<=max(root.left)) return false;
+        if(root.val>=min(root.right)) return false;
+        return isValidBST(root.left) && isValidBST(root.right);
+    }
+
+
+Solution 3 :
+
+   static boolean flag;
+
+   private long max(TreeNode root)
+   {
+        if(root==null) return Long.MIN_VALUE;
+        long leftMax=max(root.left);
+        if(leftMax>= root.val) flag=false;
+        long rightMax= max(root.right);
+        return Math.max(root.val, Math.max(leftMax,rightMax));
+   }
+   private long min(TreeNode root)
+   {
+        if(root==null) return Long.MAX_VALUE;
+        long leftMin=min(root.left);
+        long rightMin= min(root.right);
+        if(rightMin <= root.val) flag=false;
+        return Math.min(root.val, Math.min(leftMin,rightMin));
+   }
+    public boolean isValidBST(TreeNode root) {
+        flag=true;
+        max(root);
+        min(root);
+        return flag;
+    }
+
+
+Solution 4 :
+
+public boolean isValidBST(TreeNode root) {
+        return isValidBST(root, Long.MIN_VALUE, Long.MAX_VALUE);
+
+    }
+    public boolean isValidBST(TreeNode root, long minVal, long maxVal)
+    {
+        if(root==null) return true;
+        if(root.val>= maxVal  || root.val<=minVal) return false;
+        return  isValidBST(root.left , minVal , root.val) && 
+                isValidBST(root.right,root.val, maxVal);
+    }
+
+
+
+Solution 5 :
+
+    public boolean isValidBST(TreeNode root) {
+
+        TreeNode curr=root;
+        TreeNode prev=null;
+
+        while(curr!=null)
+        {
+            if(curr.left!=null)
+            {
+                TreeNode pred=curr.left;
+                while(pred.right!=null && pred.right!=curr)
+                {
+                    pred=pred.right;
+                }
+                if(pred.right==null)  // link
+                {
+                    pred.right=curr;
+                    curr=curr.left;
+                }
+                else 
+                {
+                    pred.right=null;
+                    //work
+                    if( prev!=null && prev.val >=curr.val) return false;
+                    prev=curr;
+
+                    curr=curr.right;
+                }
+
+            }
+            else 
+            {
+                //work ascending takta check chu karu inorder ni
+                if( prev!=null && prev.val>=curr.val) return false;
+                prev=curr;
+
+                curr=curr.right;
+            }
+
+        }
+        return true;

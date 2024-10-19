@@ -1,0 +1,78 @@
+Given a sorted integer array arr, two integers k and x, return the k closest integers to x in the array. The result should also be sorted in ascending order.
+
+An integer a is closer to x than an integer b if:
+
+|a - x| < |b - x|, or
+|a - x| == |b - x| and a < b
+ 
+
+Example 1:
+
+Input: arr = [1,2,3,4,5], k = 4, x = 3
+
+Output: [1,2,3,4]
+
+
+Example 2:
+
+Input: arr = [1,1,2,3,4,5], k = 4, x = -1
+
+Output: [1,1,2,3]
+
+ 
+
+Constraints:
+
+1 <= k <= arr.length
+1 <= arr.length <= 104
+arr is sorted in ascending order.
+-104 <= arr[i], x <= 104
+
+
+Solution 1:
+
+class Pair implements Comparable<Pair>
+    {
+        int dist;
+        int x;
+        Pair(int dist, int x)
+        {
+            this.dist=dist;
+            this.x=x;
+        }
+        public int compareTo(Pair navi)
+        {
+            if(this.dist==navi.dist)
+            {
+                // if(this.x > navi.x) return this.x;
+                return this.x-navi.x;
+            }
+            return this.dist-navi.dist;
+        }
+}
+
+public List<Integer> findClosestElements(int[] arr, int k, int x) {
+        
+        // heap thi array unsorted hoy to pan solve thay jay 
+        PriorityQueue<Pair> pq=new PriorityQueue<>(Collections.reverseOrder());
+        List<Integer> ans=new ArrayList<>();
+
+        for(int ele : arr)
+        {
+            int distance=Math.abs(ele-x);
+            pq.add(new Pair(distance,ele));
+            if(pq.size()>k) pq.remove();
+        }
+
+        while(pq.size()>0)
+        {
+            Pair pair=pq.remove();
+            ans.add(pair.x);
+        }
+        //note ans baar avshe e random order ma avhse !!!!! therefore sort karvu padshe 
+        Collections.sort(ans);
+        return  ans;
+    }
+
+ TC:O(nlogk(add)+ nlogn(sort))= O(nlogn)  
+ SC:(n)

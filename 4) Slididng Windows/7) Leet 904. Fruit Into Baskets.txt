@@ -63,7 +63,7 @@ TC :O(n2)
 SC :O(1)
 
 
-SOlution 2 : Sliding window 
+SOlution 2 : Sliding window your approach
 
 public int totalFruit(int[] fruits) {
         HashMap<Integer,Integer> map=new HashMap<>();
@@ -100,3 +100,35 @@ public int totalFruit(int[] fruits) {
 
 TC :O(n)
 SC :O(1)
+
+
+Soluttion 3: Sliding winodw 
+
+public int totalFruit(int[] fruits) {
+
+        HashMap<Integer,Integer> map=new HashMap<>();
+        int l=0,r=0,n=fruits.length, maxFruit=0;
+
+	while(r<n)
+        {
+            if(map.containsKey(fruits[r])) map.put(fruits[r],map.get(fruits[r])+1);
+            else map.put(fruits[r],1);
+
+            while(map.size()>2)
+            {
+                int freq=map.get(fruits[l]);
+                // map.put(fruits[l],freq-1);
+                // if(map.get(fruits[l])==0) map.remove(fruits[l]);
+                //OR
+                if(freq==1) map.remove(fruits[l]);
+                else map.put(fruits[l],freq-1);
+                l++;
+            }
+            if(map.size()<=2) maxFruit=Math.max(maxFruit,r-l+1);
+            r++;
+        }
+        return maxFruit;
+}
+
+TC : O(n)
+SC : O(1)

@@ -1,0 +1,193 @@
+You are given an integer array digits, where each element is a digit. The array may contain duplicates.
+
+You need to find all the unique integers that follow the given requirements:
+
+The integer consists of the concatenation of three elements from digits in any arbitrary order.
+The integer does not have leading zeros.
+The integer is even.
+For example, if the given digits were [1, 2, 3], integers 132 and 312 follow the requirements.
+
+Return a sorted array of the unique integers.
+
+ 
+
+Example 1:
+
+Input: digits = [2,1,3,0]
+Output: [102,120,130,132,210,230,302,310,312,320]
+Explanation: All the possible integers that follow the requirements are in the output array. 
+Notice that there are no odd integers or integers with leading zeros.
+
+
+Example 2:
+
+Input: digits = [2,2,8,8,2]
+Output: [222,228,282,288,822,828,882]
+Explanation: The same digit can be used as many times as it appears in digits. 
+In this example, the digit 8 is used twice each time in 288, 828, and 882. 
+
+
+Example 3:
+
+Input: digits = [3,7,5]
+Output: []
+Explanation: No even integers can be formed using the given digits.
+ 
+
+Constraints:
+
+3 <= digits.length <= 100
+0 <= digits[i] <= 9
+
+
+Solution 1: 
+
+
+    public int[] findEvenNumbers(int[] arr) {
+        
+        HashMap<Integer,Integer> map=new HashMap<>();
+        int n =arr.length;
+
+        ArrayList<Integer> ans=new ArrayList<>();
+
+        for(int i=0 ; i <n ; i++ )
+        {
+            if(map.containsKey(arr[i]))
+            {
+                int freq=map.get(arr[i]);
+                map.put(arr[i], freq+1);
+            }
+            else 
+            {
+                map.put(arr[i],1);
+            }
+        }
+        
+        for(int i=100 ; i<=999 ; i+=2)
+        {
+            int x=i;
+            int c=x%10;  x/=10;
+            int b=x%10;  x/=10;
+            int a=x;
+            if(map.containsKey(a))
+            {
+                int aFreq=map.get(a);
+                map.put(a, aFreq-1);
+
+                if(aFreq==1) map.remove(a);
+                if(map.containsKey(b))
+                {
+                    int bFreq=map.get(b);
+                    map.put(b, bFreq-1);
+                    if(bFreq==1) map.remove(b);
+                    if (map.containsKey(c))
+                    {
+                        ans.add(i);
+                    }
+                    map.put(b, bFreq);
+                }
+                map.put(a,aFreq);
+            }  
+        }
+
+        //jovo bhai tame em vicharat ke given didgits mathi for loop chalavish ane 3 digit select karish to pela to 3 digit ne select karva ma j fati padse (badha 3 number mate kevi for loop chalasho ?)  pachi e 3didit na 6 combinations avshe !!!!!! e badha ni string banavi ane conact karsho pachi joshso /2 che ke nai too TOo Long And Complex
+
+        // for(int i=100 ; i <=999 ; i++)
+        // {
+        //     // jovo bhai aa tame loop j proper 3 digit ni chalavi , have leading zero ni tension to nai rey 
+        //     HashMap<Integer,Integer> navomap=new HashMap<>(map);
+
+        //     if(i%2==0)
+        //     {
+
+        //         int m=i; 
+        //         int r=-1;
+        //         while(m>0)
+        //         {
+        //             r=m%10;
+        //             if(navomap.containsKey(r))
+        //             {
+        //                int freq=navomap.get(r);
+        //                navomap.put(r, freq-1);
+        //                // yeh approach kam nahi karega kyoki sabhi number ate jayenge aur frequency ko kam karte jayenge har number ke liye muje original map chahhiye 
+
+        //                // uske liye 2 choices 
+        //                //1st create deep copy at the start of each iteration 
+        //                //2nd GOLDEN  after you do you work chele last ma update again to original freq of each digit 
+        //             }
+        //             else 
+        //             {
+        //                 // means mera jo reminder hai woh to given digits[] ke array me hai hi nahi isislye yeh i wala number me kabhi bana hi nahi sakta therrfore agle number pe jao
+        //                 continue;
+        //             }
+        //             m=m/10;
+
+        //         }
+        //         for(int val : navomap.values())
+        //         {
+        //             if(val>=0)
+        //             {
+
+        //             }
+        //             else {
+        //                 continue;
+        //             }
+        //         }
+        //         ans.add(i);
+
+        //         //     int n=i;
+        //         //     int r=-1;
+        //         //     HashMap<Integer,Integer> map2=new HashMap<>();
+        //         //     while(n>0)
+        //         //     {
+        //         //         r=n%10;
+        //         //         if(map2.containsKey(r))
+        //         //         {
+        //         //            int freq=map2.get(r);
+        //         //             map2.put(r, freq+1);
+        //         //         }
+        //         //        else 
+        //         //         {
+        //         //             map2.put(r,1);
+        //         //         }
+                            
+        //         //         n=n/10;
+        //         //     }
+
+        //     }
+
+        // }
+
+        int[] ans2=new int[ans.size()];
+        for(int i=0; i<ans2.length; i++)
+        {
+            ans2[i]=ans.get(i);
+        }
+        return ans2;
+
+    }
+
+
+
+SOlution 2 :  updayu che but BAAP LOGIC CHE !!!
+
+public int[] findEvenNumbers(int[] digits) {
+        int[] fre = new int[10];
+        for (int digit : digits) fre[digit]++;
+        int index = 0;
+        int[] result = new int[500];
+        for (int i = 100; i < 1000; i+=2) {
+            if (canForm(i, fre)) result[index++] = i;
+        }
+        return Arrays.copyOf(result, index);
+    }
+
+    private boolean canForm(int num, int[] fre) {
+        int[] newFre = new int[10];
+        for (int i = 0; i < 3; i++) {
+            newFre[num%10]++;
+            num/=10;
+        }
+        for (int i = 0; i < 10; i++) if (newFre[i] > fre[i]) return false;
+        return true;
+    }

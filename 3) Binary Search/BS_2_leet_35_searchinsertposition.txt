@@ -1,0 +1,59 @@
+Given a sorted array of distinct integers and a target value, return the index if the target is found. If not, return the index where it would be if it were inserted in order.
+
+You must write an algorithm with O(log n) runtime complexity.
+
+ 
+
+Example 1:
+
+Input: nums = [1,3,5,6], target = 5
+Output: 2
+Example 2:
+
+Input: nums = [1,3,5,6], target = 2
+Output: 1
+Example 3:
+
+Input: nums = [1,3,5,6], target = 7
+Output: 4
+
+
+
+    public int searchInsert(int[] arr, int target) {
+        int lo=0,hi=arr.length-1;
+        int ans =arr.length;      // aa throught kam lagshe 
+
+        while(lo<=hi)
+        {
+            int mid=(hi-lo)/2+lo;
+            if(arr[mid]>=target)
+            {
+                ans=mid;
+                hi=mid-1;
+            } 
+            else lo=mid+1;
+        }
+        return ans;
+    }
+
+
+// jo aa taru observatiuon sachu niklu ke low variable j lower index par avi jase automatic loop patshe pachi
+    public int searchInsert(int[] arr, int target) {
+        int lo=0,hi=arr.length-1;
+
+        while(lo<=hi)
+        {
+            int mid=(hi-lo)/2+lo;
+            if(arr[mid]>=target)
+            {
+                hi=mid-1;
+            } 
+            else lo=mid+1;
+        }
+        return lo;
+    }
+
+
+
+
+ 

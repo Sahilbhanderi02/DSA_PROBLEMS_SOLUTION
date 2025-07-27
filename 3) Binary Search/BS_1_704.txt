@@ -1,0 +1,25 @@
+   
+Given an array of integers nums which is sorted in ascending order, and an integer target, write a function to search target in nums. If target exists, then return its index. Otherwise, return -1.
+
+You must write an algorithm with O(log n) runtime complexity.   
+
+ public int search(int[] nums, int target) {
+    int lo=0;
+    int hi=nums.length-1;
+    int flag=-1,ans=-1;
+    while(lo<=hi)
+    {
+    	int mid=(hi-lo)/2+lo;
+    	if(nums[mid]==target) {flag=1;ans=mid;break;}
+    	else if(nums[mid]>target)   // go left
+    	{
+		hi=mid-1;
+    	}
+    	else // go right 
+    	{
+		lo=mid+1;
+    	}
+    }
+    if(flag==1) return ans;
+    else return flag;
+}

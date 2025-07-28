@@ -1,0 +1,71 @@
+
+Number of occurrence
+
+Given a sorted array Arr of size N and a number X, you need to find the number of occurrences of X in Arr.
+
+Example 1:
+
+Input:
+N = 7, X = 2
+Arr[] = {1, 1, 2, 2, 2, 2, 3}
+Output: 4
+Explanation: 2 occurs 4 times in the
+given array.
+Example 2:
+
+Input:
+N = 7, X = 4
+Arr[] = {1, 1, 2, 2, 2, 2, 3}
+Output: 0
+Explanation: 4 is not present in the
+given array.
+
+
+
+
+
+
+    int count(int[] arr, int n, int target) {
+        // code here
+        
+        // 1st way to use for loop thi element found then count++ (badha sorted questiopn ma easy che brute force)
+        
+        int lo=0,hi=n-1;
+        
+        while(lo<=hi)
+        {
+            int mid=(hi+lo)/2;
+            
+            if(arr[mid] >= target )
+            {
+                hi=mid-1;
+            }
+            else lo=mid+1;
+        }
+        
+        if(lo==n || arr[lo]!=target) return 0;    // 2 j possibility che kato n par hase ane anadar hoy to jaruri nthi ke element present j hoy lo(lb) index ma je eleemnt hoy ene target sathe compare kari lyo
+        // no present hoy atle return 0 karyu
+        
+        // aa point thi paku che ke present che element
+        // therefore first poition lo(lb) upar che eleemnt ni
+        int fp=lo;
+        
+        lo=0;hi=n-1;
+        while(lo<=hi)
+        {
+            int mid=(hi-lo)/2+lo;
+            if(arr[mid]> target )
+            {
+                hi=mid-1;
+            }
+            else lo=mid+1;
+        }
+        
+        // aa nathi upper bound mali gayu thereofre element ub-1 upar che  NOTE yaad rakhvu lo j ub ane lb bev che !!!!
+        
+        int lp =lo-1;
+        
+        // therefor no of elemnts including  two numbers   lastno-firstno+1
+        return lp-fp+1;
+        
+    }
